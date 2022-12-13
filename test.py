@@ -66,6 +66,10 @@ for event in longpoll.listen():
                         print(params["max_age"])
                         k += 1
                         write_msg(event.user_id, f"Ищем людей по вашему запросу")
+
+
+
+
                     else:
                         write_msg(event.user_id, f"Неверно введено значеие, введите заново")
                 except ValueError:
