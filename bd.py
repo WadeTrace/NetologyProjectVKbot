@@ -231,5 +231,30 @@ class B_d:
                     """, (B_d.user_id_by_vk_id(vk_id),))
                 B_d.uppdate_count(vk_id)
 
-                return cur.fetchall()[0][B_d.count(vk_id)]
+                a = cur.fetchall()[B_d.count(vk_id)][0]
 
+                cur.execute("""
+                    select vk_id from people
+                    where people_id = %s;
+                    """, (a,))
+
+                return cur.fetchall()[0][0]
+
+
+    def del_last_favorite_people(vk_id):
+        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    select people_id from favorite
+                    where user_id = %s;
+                    """, (B_d.user_id_by_vk_id(vk_id),))
+
+                a = cur.fetchall()[-1][0]
+
+                cur.execute("""
+                    delete from favorite
+                    where people_id = %s and user_id = %
+                    """, (a, B_d.user_id_by_vk_id(vk_id)))
+
+if __name__ == "__main__":
+    print(B_d.get_people('148884720'))
