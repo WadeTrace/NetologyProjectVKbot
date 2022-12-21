@@ -1,4 +1,5 @@
 import psycopg2
+from vkapi import VkUser, token as tk
 
 
 class B_d:
@@ -256,5 +257,39 @@ class B_d:
                     where people_id = %s and user_id = %
                     """, (a, B_d.user_id_by_vk_id(vk_id)))
 
+
+    def add_all_cities(list_of_cities):
+        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+            with conn.cursor() as cur:
+                for city in list_of_cities:
+                    cur.execute("""
+                    insert into cities(name)
+                    values(%s)
+                    """, (city, ))
+                    conn.commit()
+
+
+    def vk_id_by_people_id(people_id):
+        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    select vk_id from people
+                    where people_id = %s;
+                    """, (people_id,))
+                return cur.fetchall()[0][0]
+
+
+    def get_favorite_people(vk_id):
+        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    select people_id from favorite
+                    where user_id = %s;
+                    """, (B_d.user_id_by_vk_id(str(vk_id)),))
+
+                return [int(B_d.vk_id_by_people_id(elem[0])) for elem in cur.fetchall()]
+
+
 if __name__ == "__main__":
-    print(B_d.get_people('148884720'))
+    # print(B_d.get_people('148884720'))
+    print(B_d.people_id_by_vk_id('538873157'))
