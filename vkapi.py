@@ -13,6 +13,18 @@ class VkUser:
         }
 
     def search_users(self, q, city, sex, age_to, age_from, sorting=0):
+        '''
+
+        :param q:
+        :param city:
+        :param sex:
+        :param age_to:
+        :param age_from:
+        :param sorting:
+
+        :return:
+        Возвращает список vk_id людей с подходящими параметрами, переданными в функцию
+        '''
         users_search_url = self.url + 'users.search'
         users_search_params = {
             'q': q,
@@ -32,6 +44,13 @@ class VkUser:
 
 
     def get_data_of_people(self, vk_id):
+        '''
+
+        :param vk_id:
+
+        :return:
+        Возвращает кортеж данных о человеке с vk_id равным vk_id, переданным  функцию
+        '''
         users_get_url = self.url + "users.get"
         users_get_params =\
         {
@@ -57,7 +76,7 @@ class VkUser:
         for elem in req2['response']['items']:
             id.append(elem['id'])
             likes.append(elem['likes']['count'])
-        fotos_ids = self.foto_sorting(likes, id)[:3]
+        fotos_ids = self._foto_sorting(likes, id)[:3]
         attachments = []
         for id in fotos_ids:
             attachments.append('photo{}_{}'.format(vk_id, id))
@@ -65,7 +84,15 @@ class VkUser:
         return (first_name, last_name, url, attachments)
 
 
-    def foto_sorting(self, l1, l2):
+    def _foto_sorting(self, l1, l2):
+        '''
+
+        :param l1:
+        :param l2:
+
+        :return:
+        Возвращает отсортированный по убыванию массив l2, с помощью масива l1 с соответсвующими элементами
+        '''
         for i in range(len(l1) - 1):
             for j in range(len(l1) - i - 1):
                 if l1[j] < l1[j + 1]:
@@ -75,6 +102,13 @@ class VkUser:
 
 
     def closed(self, vk_id):
+        '''
+
+        :param vk_id:
+
+        :return:
+        Возвращает статус открытости профиля человека с vk_id равным vk_id, переданным  функцию
+        '''
         users_get_url = self.url + "users.get"
         users_get_params =\
         {
