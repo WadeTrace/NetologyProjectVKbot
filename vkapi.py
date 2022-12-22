@@ -67,7 +67,7 @@ class VkUser:
 
     def foto_sorting(self, l1, l2):
         for i in range(len(l1) - 1):
-            for j in range(len(l1)- i - 1):
+            for j in range(len(l1) - i - 1):
                 if l1[j] < l1[j + 1]:
                     l1[j], l1[j + 1] = l1[j + 1], l1[j]
                     l2[j], l2[j + 1] = l2[j + 1], l2[j]

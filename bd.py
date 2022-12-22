@@ -1,10 +1,11 @@
 import psycopg2
+from tokens import database, user, password
 from vkapi import VkUser, token as tk
 
 
 class B_d:
-    def add_user(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_user(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 try:
                     B_d.user_id_by_vk_id(vk_id)
@@ -16,8 +17,8 @@ class B_d:
                     conn.commit()
 
 
-    def count(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def count(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select count_of_req from users
@@ -26,8 +27,8 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
-    def uppdate_count(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def uppdate_count(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     update users
@@ -36,8 +37,8 @@ class B_d:
                     """, (int(B_d.count(vk_id)) + 1, vk_id))
 
 
-    def stage(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def stage(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select stage_of_req from users
@@ -46,8 +47,8 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
-    def uppdate_stage(vk_id, plus="1"):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def uppdate_stage(vk_id, plus="1", db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 if B_d.stage(vk_id) == None:
                     cur.execute("""
@@ -69,8 +70,8 @@ class B_d:
                         """, (int(B_d.stage(vk_id)) + int(plus), vk_id))
 
 
-    def user_id_by_vk_id(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def user_id_by_vk_id(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select user_id from users
@@ -79,8 +80,8 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
-    def people_id_by_vk_id(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def people_id_by_vk_id(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select people_id from people
@@ -89,8 +90,8 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
-    def add_user_in_params(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_user_in_params(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 insert into params(user_id)
@@ -99,8 +100,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_min_age_in_params(min_age, vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_min_age_in_params(min_age, vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 update params
@@ -110,8 +111,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_max_age_in_params(max_age, vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_max_age_in_params(max_age, vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 update params
@@ -121,8 +122,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_sex_in_params(sex, vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_sex_in_params(sex, vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 update params
@@ -132,8 +133,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_city_in_params(city, vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_city_in_params(city, vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 update params
@@ -143,8 +144,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_people(user_vk_id, people_vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_people(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 insert into people(vk_id)
@@ -153,8 +154,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_user_people(user_vk_id, people_vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_user_people(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 insert into user_people(user_id, people_id)
@@ -163,8 +164,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_favorite_people(user_vk_id, people_vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_favorite_people(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 insert into favorite(user_id, people_id)
@@ -173,8 +174,8 @@ class B_d:
                 conn.commit()
 
 
-    def add_params(vk_id, min_age, max_age, sex, city):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_params(vk_id, min_age, max_age, sex, city, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                 insert into params(user_id, city, sex, min_age, max_age)
@@ -183,8 +184,8 @@ class B_d:
                 conn.commit()
 
 
-    def del_all_data(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def del_all_data(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 try:
                     cur.execute("""
@@ -213,8 +214,8 @@ class B_d:
                     pass
 
 
-    def get_all_params(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def get_all_params(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                            select city, sex, min_age, max_age from params
@@ -223,8 +224,8 @@ class B_d:
                 return cur.fetchall()[0]
 
 
-    def get_people(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def get_people(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select people_id from user_people
@@ -242,8 +243,8 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
-    def del_last_favorite_people(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def del_last_favorite_people(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select people_id from favorite
@@ -258,8 +259,8 @@ class B_d:
                     """, (a, B_d.user_id_by_vk_id(vk_id)))
 
 
-    def add_all_cities(list_of_cities):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def add_all_cities(list_of_cities, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 for city in list_of_cities:
                     cur.execute("""
@@ -269,8 +270,8 @@ class B_d:
                     conn.commit()
 
 
-    def vk_id_by_people_id(people_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def vk_id_by_people_id(people_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select vk_id from people
@@ -279,8 +280,8 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
-    def get_favorite_people(vk_id):
-        with psycopg2.connect(database="vkbotnet", user="postgres", password="Ivanov-1808") as conn:
+    def get_favorite_people(vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     select people_id from favorite
