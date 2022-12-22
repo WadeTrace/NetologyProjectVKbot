@@ -101,18 +101,18 @@ def main():
                                 except psycopg2.errors.UniqueViolation:
                                     if not (get_users.closed(people_id)):
                                         B_d.add_user_people(vk_id, str(people_id))
-                            people_id = get_people_info(get_users, vk_id, event)
+                            B_d.add_people_in_last_req(vk_id, get_people_info(get_users, vk_id, event))
                         else:
                             write_msg(event.user_id, f"Неверно введено значение, введите заново")
                     except ValueError:
                         write_msg(event.user_id, f"Неверно введено значение, введите заново ")
                 elif B_d.stage(vk_id) == 5 and request.lower() == "добавить в избранное":
                     get_users = VkUser(tk, "5.131")
-                    B_d.add_favorite_people(vk_id, people_id)
-                    people_id = get_people_info(get_users, vk_id, event)
+                    B_d.add_favorite_people(vk_id, B_d.get_people_in_last_req(vk_id))
+                    B_d.add_people_in_last_req(vk_id, get_people_info(get_users, vk_id, event))
                 elif B_d.stage(vk_id) == 5 and request.lower() == "следующий":
                     get_users = VkUser(tk, "5.131")
-                    people_id = get_people_info(get_users, vk_id, event)
+                    B_d.add_people_in_last_req(vk_id, get_people_info(get_users, vk_id, event))
                 elif B_d.stage(vk_id) == 5 and request.lower() == "вывести список избранных":
                     favorite_peoples = B_d.get_favorite_people(vk_id)
                     get_users = VkUser(tk, "5.131")

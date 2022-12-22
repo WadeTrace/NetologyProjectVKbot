@@ -4,7 +4,17 @@ from vkapi import VkUser, token as tk
 
 
 class B_d:
+
+
     def add_user(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param vk_id:
+
+        :return:
+        Функция добавляет запись о пользоваетеле в таблице user
+        c vk_id равным vk_id, переданным в функцию.
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 try:
@@ -18,6 +28,14 @@ class B_d:
 
 
     def count(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param vk_id:
+
+        :return:
+        Функция возвращает значение столбца count(количесвто людей, которое человек запрашивал)
+        пользователя c vk_id равным vk_id, переданным в функцию.
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -38,6 +56,13 @@ class B_d:
 
 
     def stage(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -48,6 +73,14 @@ class B_d:
 
 
     def uppdate_stage(vk_id, plus="1", db=database, u=user, p=password):
+        '''
+
+        :param plus:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 if B_d.stage(vk_id) == None:
@@ -71,6 +104,13 @@ class B_d:
 
 
     def user_id_by_vk_id(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -81,6 +121,13 @@ class B_d:
 
 
     def people_id_by_vk_id(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -90,7 +137,37 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
+    def add_people_in_last_req(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                insert into users(last_req)
+                values(%s)
+                where user_id = %s
+                """, (people_vk_id, B_d.user_id_by_vk_id(user_vk_id) ))
+                conn.commit()
+
+
+    def get_people_in_last_req(user_vk_id, db=database, u=user, p=password):
+        with psycopg2.connect(database=db, user=u, password=p) as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                select last_req from users
+                where user_id = %s
+                """, (B_d.user_id_by_vk_id(user_vk_id), ))
+                conn.commit()
+
+                return cur.fetchall()[0][0]
+
+
     def add_user_in_params(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -101,6 +178,14 @@ class B_d:
 
 
     def add_min_age_in_params(min_age, vk_id, db=database, u=user, p=password):
+        '''
+
+        :param vk_id:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -112,6 +197,14 @@ class B_d:
 
 
     def add_max_age_in_params(max_age, vk_id, db=database, u=user, p=password):
+        '''
+
+        :param vk_id:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -123,6 +216,14 @@ class B_d:
 
 
     def add_sex_in_params(sex, vk_id, db=database, u=user, p=password):
+        '''
+
+        :param vk_id:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -134,6 +235,14 @@ class B_d:
 
 
     def add_city_in_params(city, vk_id, db=database, u=user, p=password):
+        '''
+
+        :param vk_id:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -145,6 +254,14 @@ class B_d:
 
 
     def add_people(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        '''
+
+        :param people_vk_id:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -155,6 +272,14 @@ class B_d:
 
 
     def add_user_people(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        '''
+
+        :param people_vk_id:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -165,6 +290,14 @@ class B_d:
 
 
     def add_favorite_people(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        '''
+
+        :param people_vk_id:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -175,6 +308,17 @@ class B_d:
 
 
     def add_params(vk_id, min_age, max_age, sex, city, db=database, u=user, p=password):
+        '''
+
+        :param min_age:
+        :param max_age:
+        :param sex:
+        :param city:
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -185,6 +329,13 @@ class B_d:
 
 
     def del_all_data(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 try:
@@ -215,6 +366,13 @@ class B_d:
 
 
     def get_all_params(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -225,6 +383,13 @@ class B_d:
 
 
     def get_people(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -244,6 +409,13 @@ class B_d:
 
 
     def del_last_favorite_people(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -260,6 +432,13 @@ class B_d:
 
 
     def add_all_cities(list_of_cities, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 for city in list_of_cities:
@@ -271,6 +450,13 @@ class B_d:
 
 
     def vk_id_by_people_id(people_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -281,6 +467,13 @@ class B_d:
 
 
     def get_favorite_people(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param db:
+        :param u:
+        :param p:
+        :return:
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
