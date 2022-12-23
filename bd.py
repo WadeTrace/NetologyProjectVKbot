@@ -65,7 +65,7 @@ class B_d:
                     update users
                     set count_of_req = %s
                     where vk_id = %s;
-                    """, (int(B_d.count(vk_id)) + 1, vk_id))
+                    """, (int(B_d._count(vk_id)) + 1, vk_id))
 
 
     def stage(vk_id, db=database, u=user, p=password):
