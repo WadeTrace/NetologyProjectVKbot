@@ -79,7 +79,7 @@ class VkUser:
         fotos_ids = self._foto_sorting(likes, id)[:3]
         attachments = []
         for id in fotos_ids:
-            attachments.append('photo{}_{}'.format(vk_id, id))
+            attachments.append('https://vk.com/photo{}_{}'.format(vk_id, id))
 
         return (first_name, last_name, url, attachments)
 
