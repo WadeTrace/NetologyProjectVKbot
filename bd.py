@@ -4,7 +4,12 @@ from vkapi import VkUser, token as tk
 
 
 class B_d:
-
+    '''
+    Класс взаимодействия с базой данных.
+    В данных функция присутствует понятие пользоваетля и человека
+    Пользователь это user
+    Человек это people (тот кого ищет пользоваетль)
+    '''
 
     def add_user(vk_id, db=database, u=user, p=password):
         '''
@@ -27,13 +32,13 @@ class B_d:
                     conn.commit()
 
 
-    def count(vk_id, db=database, u=user, p=password):
+    def _count(vk_id, db=database, u=user, p=password):
         '''
 
         :param vk_id:
 
         :return:
-        Функция возвращает значение столбца count(количесвто людей, которое человек запрашивал)
+        Функция возвращает значение столбца count_of_req(количесвто людей, которое человек запрашивал)
         пользователя c vk_id равным vk_id, переданным в функцию.
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
@@ -45,23 +50,33 @@ class B_d:
                 return cur.fetchall()[0][0]
 
 
-    def uppdate_count(vk_id, db=database, u=user, p=password):
+    def _uppdate_count(vk_id, db=database, u=user, p=password):
+        '''
+
+        :param vk_id:
+
+        :return:
+        Функция увеличивает значение count_of_req на 1
+        пользователя c vk_id равным vk_id, переданным в функцию.
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     update users
                     set count_of_req = %s
                     where vk_id = %s;
-                    """, (int(B_d.count(vk_id)) + 1, vk_id))
+                    """, (int(B_d._count(vk_id)) + 1, vk_id))
 
 
     def stage(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Функция возвращает "уровень" - stage_of_req запроса пользователя c vk_id равным vk_id, переданным в функцию.
+        stage_of_req = 0 -> пользователь вводит пол того, кого хочет найти
+        Минимальное значение stage_of_req = 0 (пользоваетль вводит пол), максимальное значение stage_of_req = 5 (пользователь ищет людей)
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -75,11 +90,12 @@ class B_d:
     def uppdate_stage(vk_id, plus="1", db=database, u=user, p=password):
         '''
 
+        :param vk_id:
         :param plus:
-        :param db:
-        :param u:
-        :param p:
+
         :return:
+        Функция увеличивает "уровень" - stage_of_req на 1 по умолчанию и обнуляет если в plus значение None или 0
+        пользователя c vk_id равным vk_id, переданным в функцию
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -106,10 +122,10 @@ class B_d:
     def user_id_by_vk_id(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Функция возвращает user_id пользователя c vk_id равным vk_id, переданным в функцию
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -123,10 +139,10 @@ class B_d:
     def people_id_by_vk_id(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Функция возвращает people_id человека с vk_id равным vk_id, переданным в функцию
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -138,17 +154,32 @@ class B_d:
 
 
     def add_people_in_last_req(user_vk_id, people_vk_id, db=database, u=user, p=password):
+        '''
+
+        :param user_id:
+        :param people_vk_id:
+
+        :return:
+        Функция добавляет people_vk_id человека, которого пользователь просмотрел последним
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
-                insert into users(last_req)
-                values(%s)
+                update users
+                set last_req= %s
                 where user_id = %s
                 """, (people_vk_id, B_d.user_id_by_vk_id(user_vk_id) ))
                 conn.commit()
 
 
     def get_people_in_last_req(user_vk_id, db=database, u=user, p=password):
+        '''
+
+        :param user_id:
+
+        :return:
+        Функция возвращает значение last_req пользоваетля с user_id равным user_id, переданным в функцию
+        '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
@@ -163,10 +194,11 @@ class B_d:
     def add_user_in_params(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Функция добавляет запись о пользоваетеле в таблице params
+        c vk_id равным vk_id, переданным в функцию.
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -180,11 +212,11 @@ class B_d:
     def add_min_age_in_params(min_age, vk_id, db=database, u=user, p=password):
         '''
 
+        :param min_age:
         :param vk_id:
-        :param db:
-        :param u:
-        :param p:
+
         :return:
+        Функция добавляет параметр min_age пользоваетлю с vk_id равным vk_id
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -200,10 +232,10 @@ class B_d:
         '''
 
         :param vk_id:
-        :param db:
-        :param u:
-        :param p:
+        :param max_age:
+
         :return:
+        Функция добавляет параметр max_age пользоваетлю с vk_id равным vk_id
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -219,10 +251,10 @@ class B_d:
         '''
 
         :param vk_id:
-        :param db:
-        :param u:
-        :param p:
+        :param sex:
+
         :return:
+        Функция добавляет параметр sex пользоваетлю с vk_id равным vk_id
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -238,10 +270,10 @@ class B_d:
         '''
 
         :param vk_id:
-        :param db:
-        :param u:
-        :param p:
+        :param city:
+
         :return:
+        Функция добавляет параметр city пользоваетлю с vk_id равным vk_id
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -257,10 +289,9 @@ class B_d:
         '''
 
         :param people_vk_id:
-        :param db:
-        :param u:
-        :param p:
+
         :return:
+        Функция обавляет запись человека с people_vk_id
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -275,10 +306,11 @@ class B_d:
         '''
 
         :param people_vk_id:
-        :param db:
-        :param u:
-        :param p:
+        :param user_vk_id:
+
         :return:
+        Функция добавляет связь между человеком с people_vk_id равным people_vk_id, переданным в функцию
+        и пользователем с user_vk_id равным user_vk_id, переданным в функцию в таблице user_people
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -293,10 +325,11 @@ class B_d:
         '''
 
         :param people_vk_id:
-        :param db:
-        :param u:
-        :param p:
+        :param user_vk_id:
+
         :return:
+        Функция добавляет связь между человеком с people_vk_id равным people_vk_id, переданным в функцию
+        и пользователем с user_vk_id равным user_vk_id, переданным в функцию в таблице favorite
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -310,14 +343,12 @@ class B_d:
     def add_params(vk_id, min_age, max_age, sex, city, db=database, u=user, p=password):
         '''
 
+        :param vk_id:
         :param min_age:
         :param max_age:
         :param sex:
         :param city:
-        :param db:
-        :param u:
-        :param p:
-        :return:
+
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -331,10 +362,10 @@ class B_d:
     def del_all_data(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Функция удаляет все данные о пользователе с vk_id равным vk_id, переданным в функцию
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -368,10 +399,10 @@ class B_d:
     def get_all_params(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Функция возвращает список всех параметров пользователя с vk_id равным vk_id, переданным в функцию
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -385,10 +416,11 @@ class B_d:
     def get_people(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Функция возвращает следующего человека, увеличивая значение count_of_req пользователя
+        с vk_id равным vk_id, переданным в функцию, на 1
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -396,9 +428,9 @@ class B_d:
                     select people_id from user_people
                     where user_id = %s;
                     """, (B_d.user_id_by_vk_id(vk_id),))
-                B_d.uppdate_count(vk_id)
+                B_d._uppdate_count(vk_id)
 
-                a = cur.fetchall()[B_d.count(vk_id)][0]
+                a = cur.fetchall()[B_d._count(vk_id)][0]
 
                 cur.execute("""
                     select vk_id from people
@@ -411,10 +443,8 @@ class B_d:
     def del_last_favorite_people(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
-        :return:
+        :param vk_id:
+
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -434,10 +464,8 @@ class B_d:
     def add_all_cities(list_of_cities, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
-        :return:
+        :param list_of_cities:
+:
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -452,10 +480,10 @@ class B_d:
     def vk_id_by_people_id(people_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param people_id:
+
         :return:
+        Функция возвращает vk_id человека с people_id равным people_id, переданным в функцию
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
@@ -469,10 +497,10 @@ class B_d:
     def get_favorite_people(vk_id, db=database, u=user, p=password):
         '''
 
-        :param db:
-        :param u:
-        :param p:
+        :param vk_id:
+
         :return:
+        Выводит список избранных пользователя с vk_id равным vk_id, переданным в функцию, на 1
         '''
         with psycopg2.connect(database=db, user=u, password=p) as conn:
             with conn.cursor() as cur:
